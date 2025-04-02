@@ -1,5 +1,6 @@
 codeunit 50620 denySalesOrderPostingCodeunit
 {
+    //First Task
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", OnBeforePostSalesDoc, '', false, false)]
     local procedure MyProcedure(var SalesHeader: Record "Sales Header")
     var
@@ -15,7 +16,7 @@ codeunit 50620 denySalesOrderPostingCodeunit
             custLedEntry.Reset();
             custLedEntry.SetRange("Document Type", custLedEntry."Document Type"::Invoice);
             custLedEntry.SetRange("Customer No.", SalesHeader."Sell-to Customer No.");
-            custLedEntry.CalcFields("Remaining Amount");
+            // custLedEntry.CalcFields("Remaining Amount");
             custLedEntry.SetFilter("Remaining Amount", '>0');
             if custLedEntry.FindSet() then
                 repeat
@@ -32,4 +33,15 @@ codeunit 50620 denySalesOrderPostingCodeunit
             end;
         end;
     end;
+
+    //Second Task
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Copy Item", OnAfterCopyItem, '', false, false)]
+    local procedure MyProcedure2(var CopyItemBuffer: Record "Copy Item Buffer"; SourceItem: Record Item; var TargetItem: Record Item)
+    begin
+        SourceItem.Reset();
+        SourceItem.SetRange("No.", CopyItemBuffer."Source Item No.");
+        TargetItem.Description := SourceItem.Description + '-Copied Item';
+        TargetItem.Modify();
+    end;
+
 }
